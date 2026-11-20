@@ -1,0 +1,29 @@
+# Render Blueprint for Boltix API. Dashboard -> New -> Blueprint -> pick this repo.
+# This file does NOT create a database. Free accounts can only have one free database,
+# so DATABASE_URL_MAIN is typed in from your existing database. Keys marked sync: false are typed in Render's Environment tab.
+services:
+  - type: web
+    name: boltix-api-bot
+    runtime: python
+    plan: free
+    # region: set this to the SAME region as your existing database (the Boltix ff service uses it too)
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: BOT_TOKEN              # the Boltix API bot token from @BotFather
+        sync: false
+      - key: DATABASE_URL_MAIN      # paste the INTERNAL Database URL of your existing database
+        sync: false
+      - key: OWNER_ID               # your numeric Telegram ID (you receive payment claims here)
+        sync: false
+      - key: OWNER_USERNAME         # no @ sign; the "Message owner" button opens this account
+        value: dev_light01
+      - key: ACCOUNT_NUMBER
+        value: "8161796121"
+      - key: ACCOUNT_BANK
+        value: MONIEPOINT
+      - key: ACCOUNT_NAME
+        value: FORTUNE
