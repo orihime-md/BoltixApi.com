@@ -1,0 +1,37 @@
+# Render Blueprint for Boltix API. Dashboard -> New -> Blueprint -> pick this repo.
+# Creates the Postgres database AND the bot. Keys marked sync: false are typed into Render's Environment tab.
+databases:
+  - name: boltix-api-db
+    databaseName: boltix_api
+    user: boltix
+    plan: free          # free Postgres expires after 30 days unless upgraded
+    region: frankfurt   # the Boltix ff bot must use the same region
+
+services:
+  - type: web
+    name: boltix-api-bot
+    runtime: python
+    plan: free
+    region: frankfurt
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: BOT_TOKEN              # the Boltix API bot token from @BotFather
+        sync: false
+      - key: DATABASE_URL_MAIN      # filled automatically from the database created above
+        fromDatabase:
+          name: boltix-api-db
+          property: connectionString
+      - key: OWNER_ID               # your numeric Telegram ID (you receive payment claims here)
+        sync: false
+      - key: OWNER_USERNAME         # no @ sign; the "Message owner" button opens this account
+        value: dev_light01
+      - key: ACCOUNT_NUMBER
+        value: "8161796121"
+      - key: ACCOUNT_BANK
+        value: MONIEPOINT
+      - key: ACCOUNT_NAME
+        value: FORTUNE
